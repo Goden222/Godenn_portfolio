@@ -1,361 +1,450 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Full‑Stack & Crypto Trader</title>
-    <!-- Tailwind via CDN (lightweight) -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome 6 (free) -->
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-    />
-    <style>
-      /* minimal custom overrides – everything else uses Tailwind utilities */
-      body {
-        background: #0b1a33; /* deep navy fallback */
-        font-family: "Inter", system-ui, sans-serif;
-      }
-      .glass {
-        background: rgba(10, 25, 47, 0.6);
-        backdrop-filter: blur(8px);
-        border: 1px solid rgba(212, 175, 55, 0.2);
-      }
-      .gold {
-        color: #d4af37;
-      }
-      .border-gold {
-        border-color: #d4af37;
-      }
-      /* simple hover lift for cards */
-      .hover-lift {
-        transition:
-          transform 0.2s ease,
-          box-shadow 0.2s;
-      }
-      .hover-lift:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 20px 30px -10px rgba(212, 175, 55, 0.3);
-      }
-    </style>
-    <!-- Inter font -->
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-      rel="stylesheet"
-    />
-  </head>
-  <body class="text-gray-100 antialiased">
-    <!-- simple dark/light toggle (just for demo, no localStorage) -->
-    <div class="fixed top-4 right-4 z-50">
-      <button
-        id="themeToggle"
-        class="glass px-4 py-2 rounded-full text-sm flex items-center gap-2"
-      >
-        <i class="fa-regular fa-moon"></i> <span></span>
-      </button>
-    </div>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nkemboh Goden · Full‑Stack & Crypto Trader</title>
+  <!-- Tailwind + Font Awesome -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <!-- Google Fonts Inter & Playfair for accent -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <style>
+    /* ----- design tokens ----- */
+    :root {
+      --navy: #0B1A33;
+      --gold: #D4AF37;
+      --electric: #3B82F6;
+      --glass-bg: rgba(10, 25, 47, 0.6);
+      --glass-border: rgba(212, 175, 55, 0.25);
+    }
+    body {
+      background: var(--navy);
+      font-family: 'Inter', sans-serif;
+      scroll-behavior: smooth;
+    }
+    .glass {
+      background: var(--glass-bg);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 20px 40px -15px rgba(0,0,0,0.5);
+    }
+    .gold {
+      color: var(--gold);
+    }
+    .border-gold {
+      border-color: var(--gold);
+    }
+    /* animated underline for headings */
+    .heading-underline {
+      position: relative;
+      display: inline-block;
+    }
+    .heading-underline::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: -8px;
+      width: 60px;
+      height: 4px;
+      background: var(--gold);
+      border-radius: 2px;
+    }
+    /* skill marquee */
+    .marquee {
+      overflow: hidden;
+      white-space: nowrap;
+      position: relative;
+    }
+    .marquee-content {
+      display: inline-flex;
+      animation: scroll 25s linear infinite;
+    }
+    .marquee-content:hover {
+      animation-play-state: paused;
+    }
+    @keyframes scroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    /* crypto card hover */
+    .crypto-item {
+      transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      background: rgba(212, 175, 55, 0.05);
+      border: 1px solid rgba(212, 175, 55, 0.2);
+      backdrop-filter: blur(4px);
+    }
+    .crypto-item:hover {
+      transform: translateY(-6px) scale(1.05);
+      background: rgba(212, 175, 55, 0.15);
+      border-color: var(--gold);
+      box-shadow: 0 15px 30px -10px #D4AF37;
+    }
+    /* project card */
+    .project-card {
+      transition: all 0.4s ease;
+      background: rgba(10, 25, 47, 0.5);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(212, 175, 55, 0.1);
+    }
+    .project-card:hover {
+      transform: translateY(-12px) rotateX(2deg);
+      border-color: var(--gold);
+      box-shadow: 0 30px 50px -20px #D4AF37;
+    }
+    .project-img {
+      height: 180px;
+      background: linear-gradient(145deg, #1E2A47, #0B1A33);
+      border-radius: 1rem 1rem 0 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      color: var(--gold);
+      opacity: 0.9;
+    }
+    /* social icon */
+    .social-icon {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: rgba(212, 175, 55, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      color: var(--gold);
+      transition: all 0.3s;
+      border: 1px solid transparent;
+    }
+    .social-icon:hover {
+      background: var(--gold);
+      color: var(--navy);
+      transform: scale(1.2) rotate(8deg);
+      border-color: white;
+      box-shadow: 0 0 30px var(--gold);
+    }
+    /* form inputs */
+    .form-input {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      border-radius: 1rem;
+      padding: 0.75rem 1rem;
+      color: white;
+      width: 100%;
+      transition: 0.2s;
+    }
+    .form-input:focus {
+      outline: none;
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
+    }
+    .form-input::placeholder {
+      color: rgba(255,255,255,0.5);
+    }
+    /* floating animation for profile pic */
+    .profile-pic {
+      animation: float 6s ease-in-out infinite;
+    }
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+      100% { transform: translateY(0px); }
+    }
+  </style>
+</head>
+<body class="text-gray-100 antialiased">
 
-    <main class="max-w-6xl mx-auto px-4 py-8 space-y-24">
-      <!-- HERO -->
-      <section class="min-h-screen flex items-center">
-        <div class="w-full grid md:grid-cols-2 gap-12 items-center">
-          <div>
-            <h1 class="text-6xl md:text-7xl font-extrabold leading-tight">
-              <span class="block gold">Full‑Stack</span>
-              <span class="block">Developer &</span>
-              <span class="block gold">Crypto Trader</span>
-            </h1>
-            <p class="text-xl text-gray-300 mt-6 max-w-xl">
-              Building scalable web solutions & executing precision crypto
-              trades.
-            </p>
-            <div class="flex flex-wrap gap-4 mt-8">
-              <a
-                href="#projects"
-                class="glass px-8 py-4 rounded-full font-semibold hover:scale-105 transition"
-                >View Projects</a
-              >
-              <a
-                href="#order"
-                class="bg-[#D4AF37] text-[#0B1A33] px-8 py-4 rounded-full font-semibold hover:scale-105 transition"
-                >Start a Trade</a
-              >
-              <a
-                href="#contact"
-                class="glass px-8 py-4 rounded-full font-semibold hover:scale-105 transition"
-                >Contact Me</a
-              >
-            </div>
-          </div>
-          <div class="hidden md:block glass rounded-3xl p-16 text-center">
-            <img
-              src="images/photo_2026-02-21_16-15-53.jpg"
-              alt="Profile"
-              class="w-full h-auto rounded-full"
-            />
-          </div>
-        </div>
-      </section>
+  <!-- Theme Toggle (kept simple) -->
+  <div class="fixed top-4 right-4 z-50">
+    <button id="themeToggle" class="glass px-4 py-2 rounded-full text-sm flex items-center gap-2 hover:scale-105 transition">
+      <i class="fa-regular fa-moon"></i> <span>Light/Dark</span>
+    </button>
+  </div>
 
-      <!-- ABOUT / SKILLS (simplified) -->
-      <section>
-        <h2 class="text-4xl font-bold mb-12">
-          <span class="gold">⌘</span> about me
-        </h2>
-        <div class="grid md:grid-cols-2 gap-12">
-          <p class="text-lg text-gray-300">
-            Full‑stack architect with 8+ years (Python, Django, Vue, Node).
-            Active crypto trader – P2P, spot & futures. Digital strategist at
-            BUDS BTP SARL.
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-32">
+
+    <!-- ===== HERO SECTION ===== -->
+    <section id="hero" class="min-h-screen flex items-center pt-16">
+      <div class="w-full grid lg:grid-cols-2 gap-12 items-center">
+        <!-- left text -->
+        <div class="space-y-6" data-aos="fade-right">
+          <p class="text-gold text-xl font-semibold tracking-wider">👋 I'M NKEMBOH GODEN</p>
+          <h1 class="text-5xl md:text-7xl font-extrabold leading-tight">
+            <span class="block gold">Full‑Stack</span>
+            <span class="block">Developer &</span>
+            <span class="block gold">Crypto Trader</span>
+          </h1>
+          <p class="text-xl text-gray-300 max-w-xl">
+            Building scalable web solutions & executing precision crypto trades. 
+            Based in [Your City] — available worldwide.
           </p>
-          <div class="grid grid-cols-4 gap-6">
-            <!-- simple skill icons (using Font Awesome as fallback) -->
-            <i
-              class="fab fa-python text-4xl hover:text-[#D4AF37] transition"
-            ></i>
-            <i class="fab fa-js text-4xl hover:text-[#D4AF37] transition"></i>
-            <i
-              class="fab fa-vuejs text-4xl hover:text-[#D4AF37] transition"
-            ></i>
-            <i class="fab fa-node text-4xl hover:text-[#D4AF37] transition"></i>
-            <i
-              class="fab fa-html5 text-4xl hover:text-[#D4AF37] transition"
-            ></i>
-            <i
-              class="fab fa-css3-alt text-4xl hover:text-[#D4AF37] transition"
-            ></i>
-            <i
-              class="fab fa-figma text-4xl hover:text-[#D4AF37] transition"
-            ></i>
-            <i
-              class="fab fa-adobe text-4xl hover:text-[#D4AF37] transition"
-            ></i>
+          <div class="flex flex-wrap gap-4 pt-4">
+            <a href="#projects" class="glass px-8 py-4 rounded-full font-semibold hover:scale-105 transition inline-flex items-center gap-2"><span>View Projects</span> <i class="fa-regular fa-arrow-right"></i></a>
+            <a href="#order" class="bg-[#D4AF37] text-[#0B1A33] px-8 py-4 rounded-full font-semibold hover:scale-105 transition inline-flex items-center gap-2"><span>Start a Trade</span> <i class="fa-regular fa-arrow-right"></i></a>
+            <a href="#contact" class="glass px-8 py-4 rounded-full font-semibold hover:scale-105 transition inline-flex items-center gap-2"><span>Contact Me</span> <i class="fa-regular fa-arrow-right"></i></a>
           </div>
         </div>
-      </section>
-
-      <!-- CRYPTO SECTION (platforms + ticker) -->
-      <section class="glass rounded-3xl p-10">
-        <h2 class="text-3xl font-bold mb-6">
-          <span class="gold">⚡</span> crypto liquidity
-        </h2>
-        <div class="flex flex-wrap gap-6 items-center mb-8">
-          <!-- using font awesome brands as placeholder (simpleicons blocked? use fallback) -->
-          <i
-            class="fab fa-bitcoin text-4xl opacity-70 hover:opacity-100 hover:scale-110 transition"
-            title="Binance"
-          ></i>
-          <span class="text-2xl font-mono gold">BTC</span>
-          <i
-            class="fab fa-ethereum text-4xl opacity-70 hover:opacity-100"
-            title="Bybit"
-          ></i>
-          <span class="text-2xl font-mono gold">ETH</span>
-          <span class="text-2xl font-mono gold">BNB</span>
-          <span class="text-2xl font-mono gold">SOL</span>
-        </div>
-        <!-- ticker -->
-        <div class="overflow-hidden border-y border-gold/20 py-4">
-          <div
-            class="flex gap-8 text-2xl animate-[scroll_20s_linear_infinite] whitespace-nowrap"
-          >
-            <span>BTC</span><span>ETH</span><span>BNB</span><span>SOL</span
-            ><span>XRP</span><span>USDT</span> <span>BTC</span><span>ETH</span
-            ><span>BNB</span><span>SOL</span><span>XRP</span><span>USDT</span>
+        <!-- right profile image -->
+        <div class="relative flex justify-center lg:justify-end">
+          <div class="glass rounded-full p-2 w-72 h-72 lg:w-96 lg:h-96 flex items-center justify-center profile-pic">
+            <img src="images/photo_2026-02-21_16-15-53.jpg" alt="Nkemboh Goden" class="rounded-full w-full h-full object-cover border-4 border-gold/30">
           </div>
         </div>
-        <style>
-          @keyframes scroll {
-            0% {
-              transform: translateX(0);
-            }
-            100% {
-              transform: translateX(-50%);
-            }
-          }
-        </style>
-      </section>
+      </div>
+    </section>
 
-      <!-- WHATSAPP ORDER FORM -->
-      <section id="order" class="max-w-xl mx-auto glass rounded-3xl p-8">
-        <h2 class="text-2xl font-bold mb-6">
-          <span class="gold">💬</span> instant trade request
-        </h2>
-        <form id="waForm" class="space-y-4">
-          <input
-            type="text"
-            id="name"
-            placeholder="Full name"
-            required
-            class="w-full p-3 bg-transparent border border-gold/30 rounded-xl"
-          />
-          <div class="grid grid-cols-2 gap-4">
-            <select
-              id="crypto"
-              class="p-3 bg-transparent border border-gold/30 rounded-xl"
-            >
-              <option>BTC</option>
-              <option>ETH</option>
-              <option>BNB</option>
-              <option>SOL</option>
-            </select>
-            <input
-              type="number"
-              id="qty"
-              placeholder="Quantity"
-              step="any"
-              required
-              class="p-3 bg-transparent border border-gold/30 rounded-xl"
-            />
+    <!-- ===== ABOUT / SKILLS BANNER ===== -->
+    <section>
+      <h2 class="text-4xl font-bold mb-12 heading-underline"><span class="gold">⌘</span> tech arsenal</h2>
+      <div class="glass rounded-3xl p-8">
+        <p class="text-xl mb-8 text-gray-200">I craft with modern tools — constantly moving, like the markets I trade.</p>
+        <!-- Animated marquee of skills -->
+        <div class="marquee">
+          <div class="marquee-content gap-12 text-3xl">
+            <!-- repeat set to make seamless -->
+            <i class="fab fa-python gold"></i><span>Python</span>
+            <i class="fab fa-js gold"></i><span>JavaScript</span>
+            <i class="fab fa-vuejs gold"></i><span>Vue.js</span>
+            <i class="fab fa-node gold"></i><span>Node.js</span>
+            <i class="fab fa-html5 gold"></i><span>HTML5</span>
+            <i class="fab fa-css3-alt gold"></i><span>CSS3</span>
+            <i class="fab fa-figma gold"></i><span>Figma</span>
+            <i class="fab fa-adobe gold"></i><span>Adobe</span>
+            <!-- second copy for seamless loop -->
+            <i class="fab fa-python gold"></i><span>Python</span>
+            <i class="fab fa-js gold"></i><span>JavaScript</span>
+            <i class="fab fa-vuejs gold"></i><span>Vue.js</span>
+            <i class="fab fa-node gold"></i><span>Node.js</span>
+            <i class="fab fa-html5 gold"></i><span>HTML5</span>
+            <i class="fab fa-css3-alt gold"></i><span>CSS3</span>
+            <i class="fab fa-figma gold"></i><span>Figma</span>
+            <i class="fab fa-adobe gold"></i><span>Adobe</span>
           </div>
-          <button
-            type="submit"
-            class="w-full bg-[#D4AF37] text-[#0B1A33] py-3 rounded-xl font-bold text-lg flex items-center justify-center gap-2"
-          >
-            <i class="fab fa-whatsapp"></i> Submit via WhatsApp
-          </button>
-          <p id="formMsg" class="text-sm text-center gold"></p>
-        </form>
-      </section>
+        </div>
+      </div>
+    </section>
 
-      <!-- COMPANY SECTION (BUDS BTP) -->
-      <section class="grid md:grid-cols-2 gap-12 items-center">
-        <div>
-          <span class="text-sm gold tracking-widest">BUDS BTP SARL</span>
-          <h2 class="text-4xl font-bold mt-2">
-            Social Media & Digital Strategy Manager
-          </h2>
-          <p class="text-gray-300 mt-4">
-            Brand positioning · Digital growth · Engagement analytics
-          </p>
-          <div class="grid grid-cols-3 gap-4 mt-8">
-            <div class="glass p-4 text-center">
-              <span class="text-3xl font-bold gold">48</span><br /><span
-                class="text-sm"
-                >Projects</span
-              >
+    <!-- ===== CRYPTO SECTION with advanced hover ===== -->
+    <section class="glass rounded-3xl p-10">
+      <h2 class="text-4xl font-bold mb-6 heading-underline"><span class="gold">⚡</span> crypto liquidity</h2>
+      <p class="text-lg text-gray-300 mb-8">Precision execution across major assets</p>
+      
+      <!-- currencies with icons + advanced hover -->
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-12">
+        <!-- BTC -->
+        <div class="crypto-item rounded-2xl p-4 text-center cursor-pointer transition">
+          <i class="fab fa-bitcoin text-4xl gold mb-2"></i>
+          <div class="font-mono text-xl font-bold">BTC</div>
+          <div class="text-xs text-gray-400 opacity-0 hover:opacity-100 transition">Bitcoin</div>
+        </div>
+        <!-- ETH -->
+        <div class="crypto-item rounded-2xl p-4 text-center cursor-pointer transition">
+          <i class="fab fa-ethereum text-4xl gold mb-2"></i>
+          <div class="font-mono text-xl font-bold">ETH</div>
+          <div class="text-xs text-gray-400 opacity-0 hover:opacity-100 transition">Ethereum</div>
+        </div>
+        <!-- BNB (use generic coin icon) -->
+        <div class="crypto-item rounded-2xl p-4 text-center cursor-pointer transition">
+          <i class="fas fa-coins text-4xl gold mb-2"></i>
+          <div class="font-mono text-xl font-bold">BNB</div>
+          <div class="text-xs text-gray-400 opacity-0 hover:opacity-100 transition">Binance Coin</div>
+        </div>
+        <!-- SOL -->
+        <div class="crypto-item rounded-2xl p-4 text-center cursor-pointer transition">
+          <i class="fas fa-circle text-4xl gold mb-2"></i>
+          <div class="font-mono text-xl font-bold">SOL</div>
+          <div class="text-xs text-gray-400 opacity-0 hover:opacity-100 transition">Solana</div>
+        </div>
+        <!-- XRP -->
+        <div class="crypto-item rounded-2xl p-4 text-center cursor-pointer transition">
+          <i class="fas fa-chart-line text-4xl gold mb-2"></i>
+          <div class="font-mono text-xl font-bold">XRP</div>
+          <div class="text-xs text-gray-400 opacity-0 hover:opacity-100 transition">Ripple</div>
+        </div>
+        <!-- USDT -->
+        <div class="crypto-item rounded-2xl p-4 text-center cursor-pointer transition">
+          <i class="fas fa-dollar-sign text-4xl gold mb-2"></i>
+          <div class="font-mono text-xl font-bold">USDT</div>
+          <div class="text-xs text-gray-400 opacity-0 hover:opacity-100 transition">Tether</div>
+        </div>
+      </div>
+
+      <!-- Ticker strip (enhanced) -->
+      <div class="overflow-hidden border-y border-gold/30 py-4">
+        <div class="flex gap-10 text-3xl animate-[scroll_20s_linear_infinite] whitespace-nowrap font-mono">
+          <span class="gold">₿ BTC</span> <span class="gold">Ξ ETH</span> <span class="gold">⚡ SOL</span> <span class="gold">🔶 BNB</span> <span class="gold">💱 XRP</span> <span class="gold">💲 USDT</span>
+          <span class="gold">₿ BTC</span> <span class="gold">Ξ ETH</span> <span class="gold">⚡ SOL</span> <span class="gold">🔶 BNB</span> <span class="gold">💱 XRP</span> <span class="gold">💲 USDT</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== WHATSAPP ORDER FORM (enhanced) ===== -->
+    <section id="order" class="max-w-2xl mx-auto glass rounded-3xl p-8 md:p-12">
+      <h2 class="text-3xl font-bold mb-2"><span class="gold">💬</span> instant trade request</h2>
+      <p class="text-gray-300 mb-8">Fill in the details – I'll respond via WhatsApp within minutes.</p>
+      <form id="waForm" class="space-y-5">
+        <input type="text" id="name" placeholder="Full name" required class="form-input">
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <input type="text" id="crypto" placeholder="Crypto (e.g., BTC, ETH, SOL...)" required class="form-input">
+          <input type="number" id="qty" placeholder="Quantity" step="any" required class="form-input">
+        </div>
+
+        <input type="tel" id="phone" placeholder="Phone number (with country code)" class="form-input">
+
+        <textarea id="message" placeholder="Additional comments or instructions (optional)" rows="3" class="form-input"></textarea>
+
+        <button type="submit" class="w-full bg-[#D4AF37] text-[#0B1A33] py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-3 hover:scale-[1.02] transition">
+          <i class="fab fa-whatsapp text-2xl"></i> Submit via WhatsApp
+        </button>
+        <p id="formMsg" class="text-sm text-center gold"></p>
+      </form>
+    </section>
+
+    <!-- ===== COMPANY SECTION (BUDS BTP) ===== -->
+    <section class="grid lg:grid-cols-2 gap-16 items-center">
+      <div>
+        <span class="text-sm gold tracking-[0.3em]">BUDS BTP SARL</span>
+        <h2 class="text-4xl lg:text-5xl font-bold mt-2">Social Media & Digital Strategy Manager</h2>
+        <p class="text-gray-300 mt-6 text-lg">Brand positioning · Digital growth · Engagement analytics · Global campaigns</p>
+        <div class="grid grid-cols-3 gap-6 mt-10">
+          <div class="glass p-5 text-center rounded-2xl hover:scale-105 transition">
+            <span class="text-4xl font-bold gold">48</span>
+            <span class="block text-sm text-gray-400">Projects Managed</span>
+          </div>
+          <div class="glass p-5 text-center rounded-2xl hover:scale-105 transition">
+            <span class="text-4xl font-bold gold">240%</span>
+            <span class="block text-sm text-gray-400">Engagement Growth</span>
+          </div>
+          <div class="glass p-5 text-center rounded-2xl hover:scale-105 transition">
+            <span class="text-4xl font-bold gold">127</span>
+            <span class="block text-sm text-gray-400">Campaigns Launched</span>
+          </div>
+        </div>
+      </div>
+      <div class="glass rounded-3xl p-16 text-center">
+        <span class="text-9xl gold">◈</span>
+      </div>
+    </section>
+
+    <!-- ===== PROJECTS SECTION (rich cards) ===== -->
+    <section id="projects">
+      <h2 class="text-4xl font-bold mb-12 heading-underline"><span class="gold">✦</span> featured projects</h2>
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- card 1 -->
+        <div class="project-card rounded-3xl overflow-hidden">
+          <div class="project-img">
+            <i class="fas fa-chart-pie"></i>
+          </div>
+          <div class="p-6">
+            <h3 class="text-2xl font-bold">Nexus Dashboard</h3>
+            <p class="text-gray-300 text-sm mt-2">Real‑time crypto portfolio tracker with multi‑exchange support and advanced analytics.</p>
+            <div class="flex flex-wrap gap-2 my-4">
+              <span class="text-xs bg-gold/20 px-3 py-1 rounded-full gold">Vue.js</span>
+              <span class="text-xs bg-gold/20 px-3 py-1 rounded-full gold">D3.js</span>
+              <span class="text-xs bg-gold/20 px-3 py-1 rounded-full gold">Node.js</span>
             </div>
-            <div class="glass p-4 text-center">
-              <span class="text-3xl font-bold gold">240%</span><br /><span
-                class="text-sm"
-                >Growth</span
-              >
+            <a href="#" class="inline-flex items-center gap-2 gold hover:gap-4 transition-all">Live preview <i class="fa-regular fa-arrow-right"></i></a>
+          </div>
+        </div>
+        <!-- card 2 -->
+        <div class="project-card rounded-3xl overflow-hidden">
+          <div class="project-img">
+            <i class="fas fa-robot"></i>
+          </div>
+          <div class="p-6">
+            <h3 class="text-2xl font-bold">P2P Arbitrage Bot</h3>
+            <p class="text-gray-300 text-sm mt-2">Automated price monitor across Binance P2P, Bybit, and local banks – sends instant alerts.</p>
+            <div class="flex flex-wrap gap-2 my-4">
+              <span class="text-xs bg-gold/20 px-3 py-1 rounded-full gold">Python</span>
+              <span class="text-xs bg-gold/20 px-3 py-1 rounded-full gold">Telegram API</span>
+              <span class="text-xs bg-gold/20 px-3 py-1 rounded-full gold">Redis</span>
             </div>
-            <div class="glass p-4 text-center">
-              <span class="text-3xl font-bold gold">127</span><br /><span
-                class="text-sm"
-                >Campaigns</span
-              >
+            <a href="#" class="inline-flex items-center gap-2 gold hover:gap-4 transition-all">Live preview <i class="fa-regular fa-arrow-right"></i></a>
+          </div>
+        </div>
+        <!-- card 3 -->
+        <div class="project-card rounded-3xl overflow-hidden">
+          <div class="project-img">
+            <i class="fas fa-database"></i>
+          </div>
+          <div class="p-6">
+            <h3 class="text-2xl font-bold">Headless CMS</h3>
+            <p class="text-gray-300 text-sm mt-2">Django + React headless CMS built for agencies – flexible, fast, and developer‑friendly.</p>
+            <div class="flex flex-wrap gap-2 my-4">
+              <span class="text-xs bg-gold/20 px-3 py-1 rounded-full gold">Django</span>
+              <span class="text-xs bg-gold/20 px-3 py-1 rounded-full gold">React</span>
+              <span class="text-xs bg-gold/20 px-3 py-1 rounded-full gold">GraphQL</span>
             </div>
+            <a href="#" class="inline-flex items-center gap-2 gold hover:gap-4 transition-all">Live preview <i class="fa-regular fa-arrow-right"></i></a>
           </div>
         </div>
-        <div class="glass rounded-3xl p-16 text-center">
-          <span class="text-8xl gold">◈</span>
-        </div>
-      </section>
+      </div>
+    </section>
 
-      <!-- PROJECTS (cards) -->
-      <section id="projects">
-        <h2 class="text-4xl font-bold mb-8">
-          <span class="gold">✦</span> projects
-        </h2>
-        <div class="grid md:grid-cols-3 gap-6">
-          <div class="glass rounded-2xl p-6 hover-lift">
-            <div
-              class="h-32 bg-gradient-to-br from-blue-900 to-purple-900 rounded-xl mb-4"
-            ></div>
-            <h3 class="text-xl font-bold">Nexus Dashboard</h3>
-            <p class="text-sm text-gray-400">Crypto portfolio tracker</p>
-          </div>
-          <div class="glass rounded-2xl p-6 hover-lift">
-            <div
-              class="h-32 bg-gradient-to-br from-amber-800 to-yellow-700 rounded-xl mb-4"
-            ></div>
-            <h3 class="text-xl font-bold">P2P Arbitrage Bot</h3>
-            <p class="text-sm text-gray-400">Automated alert system</p>
-          </div>
-          <div class="glass rounded-2xl p-6 hover-lift">
-            <div
-              class="h-32 bg-gradient-to-br from-indigo-800 to-blue-600 rounded-xl mb-4"
-            ></div>
-            <h3 class="text-xl font-bold">Headless CMS</h3>
-            <p class="text-sm text-gray-400">For dev agencies</p>
-          </div>
-        </div>
-      </section>
+    <!-- ===== SOCIAL LINKS (dynamic) ===== -->
+    <section id="contact" class="text-center">
+      <h2 class="text-4xl font-bold mb-4 heading-underline inline-block">connect</h2>
+      <p class="text-gray-300 mb-10">Let's talk business, trading, or tech — any time.</p>
+      <div class="flex flex-wrap justify-center gap-6">
+        <a href="#" class="social-icon"><i class="fab fa-whatsapp"></i></a>
+        <a href="#" class="social-icon"><i class="fab fa-telegram-plane"></i></a>
+        <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+        <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+        <a href="#" class="social-icon"><i class="far fa-envelope"></i></a>
+        <a href="#" class="social-icon"><i class="fab fa-github"></i></a>
+      </div>
+      <div class="mt-12 glass inline-block px-8 py-4 rounded-full">
+        <span class="gold">✉️</span> nkemboh.goden@example.com
+      </div>
+    </section>
+  </main>
 
-      <!-- SOCIAL LINKS -->
-      <section id="contact" class="text-center">
-        <h2 class="text-3xl font-bold mb-6">
-          connect <span class="gold">↗</span>
-        </h2>
-        <div class="flex justify-center gap-8 text-4xl">
-          <a href="#" class="hover:text-[#D4AF37] transition"
-            ><i class="fab fa-whatsapp"></i
-          ></a>
-          <a href="#" class="hover:text-[#D4AF37] transition"
-            ><i class="fab fa-instagram"></i
-          ></a>
-          <a href="#" class="hover:text-[#D4AF37] transition"
-            ><i class="fab fa-linkedin-in"></i
-          ></a>
-          <a href="#" class="hover:text-[#D4AF37] transition"
-            ><i class="far fa-envelope"></i
-          ></a>
-        </div>
-      </section>
-    </main>
+  <footer class="text-center py-8 text-sm text-gray-400 border-t border-gold/10 mt-24">
+    © 2025 Nkemboh Goden — Full‑Stack Developer & Crypto Trader
+  </footer>
 
-    <footer
-      class="text-center py-6 text-sm text-gray-400 border-t border-gold/10 mt-16"
-    >
-      © 2025 — Full‑Stack Developer & Crypto Trader
-    </footer>
+  <script>
+    // WhatsApp form handler with phone & free crypto
+    document.getElementById('waForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const name = document.getElementById('name').value.trim();
+      const crypto = document.getElementById('crypto').value.trim().toUpperCase();
+      const qty = document.getElementById('qty').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const comment = document.getElementById('message').value.trim();
 
-    <script>
-      // minimal WhatsApp handler
-      document
-        .getElementById("waForm")
-        .addEventListener("submit", function (e) {
-          e.preventDefault();
-          const name = document.getElementById("name").value.trim();
-          const crypto = document.getElementById("crypto").value;
-          const qty = document.getElementById("qty").value.trim();
-          if (!name || !qty || parseFloat(qty) <= 0) {
-            document.getElementById("formMsg").innerText =
-              "❌ Please fill all fields correctly.";
-            return;
-          }
-          const text = `Hello, I would like to buy ${qty} of ${crypto}. My name is ${name}.`;
-          const url = `https://wa.me/1234567890?text=${encodeURIComponent(text)}`; // replace with your number
-          window.open(url, "_blank");
-          document.getElementById("formMsg").innerHTML =
-            "✅ Redirecting to WhatsApp...";
-        });
-
-      // simple theme toggle (inline style)
-      document
-        .getElementById("themeToggle")
-        .addEventListener("click", function () {
-          document.body.classList.toggle("bg-white");
-          document.body.classList.toggle("text-gray-900");
-          // you can expand this
-        });
-    </script>
-
-    <!-- ensure background class for dark default -->
-    <style>
-      body {
-        background-color: #0b1a33;
+      if (!name || !crypto || !qty || parseFloat(qty) <= 0) {
+        document.getElementById('formMsg').innerText = '❌ Please fill required fields (name, crypto, quantity).';
+        return;
       }
-      body.bg-white {
-        background-color: #f0f5fa;
-        color: #0b1a33;
-      }
-      body.bg-white .glass {
-        background: rgba(255, 255, 255, 0.7);
-      }
-    </style>
-  </body>
+
+      let text = `Hello, I would like to buy ${qty} of ${crypto}. My name is ${name}.`;
+      if (phone) text += ` My phone: ${phone}.`;
+      if (comment) text += ` Message: ${comment}`;
+
+      const url = `https://wa.me/1234567890?text=${encodeURIComponent(text)}`; // Replace with your number
+      window.open(url, '_blank');
+      document.getElementById('formMsg').innerHTML = '✅ Redirecting to WhatsApp...';
+    });
+
+    // Simple theme toggle (just for demonstration)
+    document.getElementById('themeToggle').addEventListener('click', function() {
+      document.body.classList.toggle('bg-white');
+      document.body.classList.toggle('text-gray-900');
+    });
+  </script>
+
+  <style>
+    /* Light mode overrides */
+    body.bg-white { background-color: #f0f5fa; }
+    body.bg-white .glass { background: rgba(255,255,255,0.7); border-color: rgba(212,175,55,0.3); }
+    body.bg-white .form-input { background: rgba(0,0,0,0.02); color: #0B1A33; }
+    body.bg-white .form-input::placeholder { color: #666; }
+    body.bg-white .gold { color: #B8860B; }
+    body.bg-white .crypto-item { background: rgba(212,175,55,0.1); }
+    body.bg-white .crypto-item:hover { background: rgba(212,175,55,0.3); }
+  </style>
+</body>
 </html>
